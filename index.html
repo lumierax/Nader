@@ -1,0 +1,821 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#07090f" />
+  <title>مكتشف العملات — V7</title>
+  <style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;background:#07090f;color:#f6f7fb}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0%,rgba(62,96,255,.17),transparent 31%),radial-gradient(circle at 92% 15%,rgba(0,219,169,.12),transparent 27%),linear-gradient(180deg,#07090f,#0b0f19 70%,#080a10);color:#f6f7fb}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px}.shell{width:min(1180px,calc(100% - 28px));margin:22px auto 56px;position:relative}.panel,.stat{border:1px solid rgba(255,255,255,.09);background:rgba(15,19,30,.78);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);box-shadow:0 18px 55px rgba(0,0,0,.24);border-radius:22px}.hero{padding:28px}.brand{display:flex;align-items:center;gap:15px}.mark{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,rgba(73,110,255,.95),rgba(0,210,170,.9));box-shadow:0 12px 30px rgba(63,104,255,.22)}.eyebrow{font-size:11px;letter-spacing:.16em;color:#8fa1c7;font-weight:800}.hero h1,.section-head h2{margin:4px 0 0}.hero h1{font-size:clamp(28px,5vw,46px)}.hero p{max-width:800px;color:#adb7cb;line-height:1.9;margin:18px 0}.chips{display:flex;flex-wrap:wrap;gap:8px}.chips span,.badge{padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:999px;background:rgba(255,255,255,.04);font-size:12px;color:#cbd4e6}.status{margin-top:18px;display:flex;align-items:center;gap:9px;color:#dbe3f2}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#28d39a;box-shadow:0 0 0 5px rgba(40,211,154,.1)}.dot.busy{background:#f0bd4c;box-shadow:0 0 0 5px rgba(240,189,76,.1)}.dot.err{background:#ff697c;box-shadow:0 0 0 5px rgba(255,105,124,.1)}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:12px 0}.stat{padding:18px}.stat span,.metric span,.scan-metrics span{font-size:12px;color:#8f9ab0}.stat strong{display:block;font-size:25px;margin-top:6px}.toolbar{display:flex;gap:10px;padding:14px;margin-bottom:12px}.telegram-settings{padding:20px;margin-bottom:12px}.telegram-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.telegram-field{display:flex;flex-direction:column;gap:7px}.telegram-field span{font-size:12px;color:#8f9ab0}.telegram-field input{width:100%;border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:12px 13px;background:#0e1420;color:#eef2fb;outline:none}.telegram-field input:focus{border-color:rgba(79,111,255,.75);box-shadow:0 0 0 3px rgba(79,111,255,.12)}.telegram-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}.telegram-toggle{display:flex;align-items:center;gap:8px;color:#cbd4e6;font-size:13px}.telegram-toggle input{width:auto}.telegram-note{font-size:11px;color:#7f8aa0;line-height:1.7;margin-top:10px}.telegram-status{font-size:12px;color:#9ea9bd}.telegram-status.ok{color:#39d7a6}.telegram-status.err{color:#ff697c}button{appearance:none;border:1px solid rgba(255,255,255,.11);border-radius:13px;padding:12px 16px;background:#141a27;color:#eef2fb;font-weight:800;cursor:pointer}button.primary{background:linear-gradient(135deg,#4f6fff,#2b8dff);border-color:transparent}button:disabled{opacity:.45;cursor:not-allowed}.scanner,.panel:not(.hero):not(.toolbar){padding:20px;margin-bottom:12px}.section-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin-bottom:16px}.section-head strong{font-size:13px;color:#aeb9cd}.scanbar{height:8px;background:#0b0f18;border:1px solid rgba(255,255,255,.07);border-radius:999px;overflow:hidden}.scanbar>div{height:100%;width:0;background:linear-gradient(90deg,#4f6fff,#2bd1a9);transition:width .25s ease}.scan-metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:12px}.scan-metrics div{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);padding:12px;border-radius:14px}.scan-metrics strong{display:block;font-size:20px;margin-top:4px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.empty-state{display:block;color:#8793a9;padding:24px;text-align:center;border:1px dashed rgba(255,255,255,.1);border-radius:16px}.signal{padding:17px;border-radius:18px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.018))}.signal-win{border-color:rgba(43,209,169,.28)}.signal-top,.progress-label,.signal-foot{display:flex;justify-content:space-between;gap:10px;align-items:center}.signal-kicker{font-size:10px;color:#8b98af;letter-spacing:.08em}.symbol{font-size:23px;font-weight:900;margin-top:4px}.signal-progress{height:7px;background:#0b1019;border-radius:99px;overflow:hidden;margin:16px 0 7px}.signal-progress-fill{height:100%;background:linear-gradient(90deg,#4f6fff,#2bd1a9)}.progress-label{font-size:12px;color:#9ea9bd}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.metric{padding:10px;border-radius:12px;background:rgba(0,0,0,.18)}.metric strong{display:block;margin-top:4px}.signal-foot{font-size:10px;color:#7f8aa0;flex-wrap:wrap}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:right;padding:13px 10px;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px}th{color:#7f8ca4;font-size:11px}.win{color:#39d7a6}.active{color:#f0bd4c}.muted{color:#7c879c}.center{text-align:center}footer{text-align:center;color:#69758b;font-size:11px;padding:22px 8px}@media(max-width:820px){.telegram-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.scan-metrics{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.toolbar{display:grid;grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.shell{width:min(100% - 18px,1180px);margin-top:10px}.hero{padding:20px}.metrics{grid-template-columns:1fr}.scan-metrics div:last-child{grid-column:span 2}}
+
+</style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero panel">
+      <div class="brand"><div class="mark">V7</div><div><div class="eyebrow">LIVE CHALLENGE ENGINE</div><h1>مكتشف العملات</h1></div></div>
+      <p>فحص متدفق لكون Binance Spot/USDT وفق قواعد ثابتة، مع تثبيت سعر التنفيذ وحفظ كل إشارة رسمية قبل عرضها.</p>
+      <div class="chips"><span id="engineVersion">Engine —</span><span id="configBadge">cfg —</span><span>Fixed Rules</span></div>
+      <div class="status"><span id="statusDot" class="dot ok"></span><span id="statusText">جاهز</span></div>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><span>إشارات اليوم</span><strong id="todayCount">0</strong></article>
+      <article class="stat"><span>حققت +10%</span><strong id="winsCount">0</strong></article>
+      <article class="stat"><span>نشطة</span><strong id="activeCount">0</strong></article>
+      <article class="stat"><span>آخر فحص</span><strong id="lastScan">—</strong></article>
+    </section>
+
+    <section class="panel toolbar">
+      <button id="scanBtn" class="primary">فحص الآن</button>
+      <button id="refreshBtn">تحديث النتائج</button>
+      <button id="exportBtn">تصدير سجل التدقيق</button>
+    </section>
+
+    <section class="panel telegram-settings">
+      <div class="section-head"><div><span class="eyebrow">TELEGRAM ALERTS</span><h2>إعدادات تنبيهات تيليجرام</h2></div><strong id="telegramStateLabel">غير مفعّل</strong></div>
+      <div class="telegram-grid">
+        <label class="telegram-field"><span>Bot Token</span><input id="telegramToken" type="password" autocomplete="off" placeholder="أو ثبته داخل TELEGRAM_STATIC_CONFIG" /></label>
+        <label class="telegram-field"><span>Chat ID</span><input id="telegramChatId" type="text" inputmode="text" autocomplete="off" placeholder="719297143 أو -100..." /></label>
+      </div>
+      <div class="telegram-actions">
+        <label class="telegram-toggle"><input id="telegramEnabled" type="checkbox" /> تفعيل إرسال التنبيهات</label>
+        <button id="telegramSaveBtn" class="primary">حفظ إعدادات تيليجرام</button>
+        <button id="telegramTestBtn">إرسال رسالة اختبار</button>
+        <span id="telegramStatus" class="telegram-status">لم يتم الحفظ بعد.</span>
+      </div>
+      <div class="telegram-note">يرسل تنبيهًا عند تثبيت إشارة رسمية جديدة، وتنبيهًا ثانيًا عند تحقق هدف +10%. للتشغيل على سيرفر/Headless يمكن تثبيت Bot Token وChat ID داخل <code>TELEGRAM_STATIC_CONFIG</code> في نفس الملف؛ وتبقى الخانات أدناه متاحة كإعداد محلي اختياري.</div>
+    </section>
+
+    <section class="panel scanner">
+      <div class="section-head"><div><span class="eyebrow">UNIVERSE AUDIT</span><h2>فحص كون التحدي</h2></div><strong id="scanPhase">جاهز</strong></div>
+      <div class="scanbar"><div id="scanBar"></div></div>
+      <div class="scan-metrics">
+        <div><span>الكون</span><strong id="universeCount">0</strong></div>
+        <div><span>تم فحصه</span><strong id="visitedCount">0</strong></div>
+        <div><span>اجتاز البوابة</span><strong id="quickCount">0</strong></div>
+        <div><span>تحليل عميق</span><strong id="deepCount">0</strong></div>
+        <div><span>منشور</span><strong id="publishedCount">0</strong></div>
+      </div>
+    </section>
+
+    <section class="panel"><div class="section-head"><div><span class="eyebrow">TODAY · APPEND ONLY</span><h2>إشارات اليوم</h2></div></div><div id="todaySignals" class="cards empty-state">لا توجد إشارة مسجلة لهذا اليوم بعد.</div></section>
+
+    <section class="panel"><div class="section-head"><div><span class="eyebrow">AUDIT TRAIL</span><h2>السجل الكامل</h2></div></div><div class="table-wrap"><table><thead><tr><th>العملة</th><th>وقت الإشارة</th><th>الدخول</th><th>الهدف</th><th>الأعلى</th><th>الحالة</th></tr></thead><tbody id="historyBody"><tr><td colspan="6" class="muted center">لا توجد إشارات مسجلة.</td></tr></tbody></table></div></section>
+
+    <footer>بيانات Binance Spot العامة فقط · لا مفاتيح API · كل إشارة تظهر رسميًا تبقى في سجل التحدي.</footer>
+  </main>
+  <script>
+(function(root,factory){
+  const api=factory();
+  if(typeof module==='object'&&module.exports)module.exports=api;
+  else root.CoinCore=api;
+})(typeof self!=='undefined'?self:this,function(){
+'use strict';
+
+const VERSION='7.0.0';
+const STATE_SCHEMA_VERSION=7;
+const RULESET_REVISION='v7-contract-1';
+const MUTABLE_SIGNAL_FIELDS=new Set(['highest','status','hitTs','hitPrecision','trackedThrough','presentedAt','displayedAt']);
+
+// Fixed challenge rules. No value is relaxed by hour, day progress, or lack of signals.
+const CFG=Object.freeze({
+  quote:'USDT',
+  targetPct:10,
+  minQuoteVolume:3_000_000,
+  minTrades:4_000,
+  maxSpreadPct:0.35,
+  depthBandPct:0.60,
+  minDepthNotional:2_500,
+  minCompleted15m:80,
+  minCompleted1h:60,
+  publishScore:62,
+  maxTickerAgeMs:120_000,
+  maxBarBoundaryLagMs:90_000,
+  maxSnapshotDivergencePct:1.6,
+  maxFinalizationAgeMs:25_000,
+  duplicateCooldownHours:48,
+  maxEntryDriftPct:0.8,
+  trackingSafetyLagMs:2_000,
+  chase:Object.freeze({maxR1:4.8,maxR4:10.5,maxR12:18,maxR24:28,maxExtension:5.2}),
+  excludedBases:Object.freeze(['USDT','USDC','FDUSD','TUSD','USDP','DAI','EUR','TRY','BRL','BIDR','AEUR','EURI'])
+});
+
+function num(v){const x=Number(v);return Number.isFinite(x)?x:0}
+function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+function mean(xs){return xs.length?xs.reduce((a,b)=>a+num(b),0)/xs.length:0}
+function median(xs){if(!xs.length)return 0;const a=xs.map(num).sort((x,y)=>x-y);const m=Math.floor(a.length/2);return a.length%2?a[m]:(a[m-1]+a[m])/2}
+function pct(a,b){a=num(a);b=num(b);return a?((b/a)-1)*100:0}
+function dayKeyUTC(ms){return new Date(num(ms)).toISOString().slice(0,10)}
+function fmtPrice(v){const x=num(v);if(x>=1000)return x.toFixed(2);if(x>=1)return x.toFixed(4);if(x>=.01)return x.toFixed(6);return x.toPrecision(6)}
+function stableStringify(v){if(v===null||typeof v!=='object')return JSON.stringify(v);if(Array.isArray(v))return '['+v.map(stableStringify).join(',')+']';return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+stableStringify(v[k])).join(',')+'}'}
+function fnv1a(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)}return (h>>>0).toString(16).padStart(8,'0')}
+function configId(){return `cfg-${fnv1a(stableStringify({version:VERSION,revision:RULESET_REVISION,cfg:CFG}))}`}
+
+function permissionSets(info){
+  const current=Array.isArray(info&&info.permissionSets)?info.permissionSets:[];
+  const legacy=Array.isArray(info&&info.permissions)&&info.permissions.length?[info.permissions]:[];
+  return current.concat(legacy);
+}
+function hasPermission(info,permission){return permissionSets(info).some(set=>Array.isArray(set)&&set.includes(permission))}
+function marketInUniverse(info){
+  if(!info)return false;
+  const quote=String(info.quoteAsset||'').toUpperCase();
+  const base=String(info.baseAsset||'').toUpperCase();
+  const symbol=String(info.symbol||'').toUpperCase();
+  if(info.status!=='TRADING'||quote!==CFG.quote||info.isSpotTradingAllowed!==true)return false;
+  if(CFG.excludedBases.includes(base)||hasPermission(info,'LEVERAGED'))return false;
+  return symbol.endsWith(CFG.quote);
+}
+function tickerQualityPasses(ticker){
+  return !!ticker&&num(ticker.quoteVolume)>=CFG.minQuoteVolume&&num(ticker.count)>=CFG.minTrades&&num(ticker.lastPrice)>0;
+}
+function tickerSnapshotFresh(ticker,asOf){
+  const now=num(asOf),close=num(ticker&&ticker.closeTime);
+  if(!now||!close)return false;
+  return close<=now+10_000&&now-close<=CFG.maxTickerAgeMs;
+}
+function scanPriority(ticker){
+  const change=clamp(num(ticker&&ticker.priceChangePercent),-8,12);
+  const volume=Math.log10(Math.max(1,num(ticker&&ticker.quoteVolume)));
+  const trades=Math.log10(Math.max(1,num(ticker&&ticker.count)));
+  return volume*13+trades*7+change*1.1;
+}
+function prepareUniverse(exchangeInfo,bulkTickers){
+  const map=new Map((bulkTickers||[]).map(t=>[String(t.symbol||''),t]));
+  return ((exchangeInfo&&exchangeInfo.symbols)||[])
+    .filter(marketInUniverse)
+    .map(info=>({info,bulkTicker:map.get(info.symbol)||null,priority:scanPriority(map.get(info.symbol))}))
+    .sort((a,b)=>b.priority-a.priority||String(a.info.symbol).localeCompare(String(b.info.symbol)));
+}
+
+function parseKlines(rows){return (rows||[]).map(r=>({t:num(r[0]),o:num(r[1]),h:num(r[2]),l:num(r[3]),c:num(r[4]),v:num(r[5]),closeTime:num(r[6]),q:num(r[7]),trades:num(r[8]),tb:num(r[10])}))}
+function seriesSnapshot(rows,intervalMs,asOf,minCompleted){
+  const now=num(asOf),bars=parseKlines(rows);
+  if(!now||!bars.length)return null;
+  for(let i=0;i<bars.length;i++){
+    const b=bars[i];
+    if(!b.t||!b.closeTime||b.closeTime<b.t||b.o<=0||b.h<=0||b.l<=0||b.c<=0)return null;
+    if(i&&b.t<=bars[i-1].t)return null;
+    if(i&&Math.abs((b.t-bars[i-1].t)-intervalMs)>2_000)return null;
+  }
+  const last=bars[bars.length-1];
+  if(last.t>now+5_000||last.closeTime<now-CFG.maxBarBoundaryLagMs)return null;
+  const completed=bars.filter(b=>b.closeTime<now);
+  if(completed.length<minCompleted)return null;
+  return {bars,completed,last};
+}
+function candleRange(c){return c&&c.c?((c.h-c.l)/c.c)*100:0}
+function efficiency(bars,look){
+  const a=bars.slice(-look);if(a.length<3)return 0;
+  const net=Math.abs(a[a.length-1].c-a[0].c);
+  const path=a.slice(1).reduce((sum,x,i)=>sum+Math.abs(x.c-a[i].c),0);
+  return path?net/path:0;
+}
+function atFromEnd(a,n){return a[a.length-n]||null}
+function evaluate(symbol,k15raw,k1hraw,book,quoteVolume,meta){
+  meta=meta||{};
+  const asOf=num(meta.asOf);
+  if(!asOf||!tickerSnapshotFresh({closeTime:meta.tickerCloseTime},asOf))return null;
+  const s15=seriesSnapshot(k15raw,15*60e3,asOf,CFG.minCompleted15m);
+  const s1h=seriesSnapshot(k1hraw,60*60e3,asOf,CFG.minCompleted1h);
+  if(!s15||!s1h)return null;
+  const c15=s15.completed,c1h=s1h.completed;
+  if(c15.length<48||c1h.length<24)return null;
+
+  const ask=num(book&&book.askPrice),bid=num(book&&book.bidPrice);
+  if(!ask||!bid||ask<=bid)return null;
+  const spread=((ask-bid)/((ask+bid)/2))*100;
+  if(spread>CFG.maxSpreadPct)return null;
+  if(Math.abs(pct(s15.last.c,ask))>CFG.maxSnapshotDivergencePct)return null;
+  if(num(meta.tickerLastPrice)&&Math.abs(pct(num(meta.tickerLastPrice),ask))>CFG.maxSnapshotDivergencePct)return null;
+
+  const live=ask;
+  const r1=pct(atFromEnd(c15,4).c,live);
+  const r4=pct(atFromEnd(c15,16).c,live);
+  const r12=pct(atFromEnd(c15,48).c,live);
+  const r24=pct(atFromEnd(c1h,24).c,live);
+  const anchor=median(c15.slice(-19).map(x=>x.c));
+  const extension=anchor?pct(anchor,live):0;
+  if(r1>CFG.chase.maxR1||r4>CFG.chase.maxR4||r12>CFG.chase.maxR12||r24>CFG.chase.maxR24||extension>CFG.chase.maxExtension)return null;
+
+  const recentVol=c15.slice(-4).map(x=>x.q);
+  const baseVol=c15.slice(-36,-4).map(x=>x.q);
+  const volRatio=mean(recentVol)/Math.max(1,median(baseVol));
+  const shortRange=mean(c15.slice(-8).map(candleRange));
+  const longRange=Math.max(.0001,mean(c15.slice(-40,-8).map(candleRange)));
+  const compression=shortRange/longRange;
+  const priorHigh=Math.max(...c15.slice(-48).map(x=>x.h));
+  const breakoutDistance=priorHigh?pct(priorHigh,live):0;
+  const pathEfficiency=efficiency(c15,20);
+
+  const impulse=clamp((r1+1.2)/4.2,0,1)*10+clamp((r4+2)/8,0,1)*10;
+  const trend=clamp((r12+4)/14,0,1)*10+clamp((r24+6)/20,0,1)*8;
+  const volume=clamp((volRatio-.75)/2.25,0,1)*20;
+  const compressionScore=clamp((1.05-compression)/.65,0,1)*12;
+  const breakout=clamp((breakoutDistance+3.0)/3.2,0,1)*14;
+  const efficiencyScore=clamp((pathEfficiency-.18)/.62,0,1)*10;
+  const liquidity=clamp((Math.log10(Math.max(1,num(quoteVolume)))-6.3)/2.2,0,1)*6;
+  const score=clamp(impulse+trend+volume+compressionScore+breakout+efficiencyScore+liquidity,0,100);
+
+  return {
+    symbol:String(symbol),score:+score.toFixed(2),price:live,spreadPct:+spread.toFixed(4),quoteVolume:num(quoteVolume),
+    analysisAt:asOf,
+    features:{r1:+r1.toFixed(2),r4:+r4.toFixed(2),r12:+r12.toFixed(2),r24:+r24.toFixed(2),extension:+extension.toFixed(2),volRatio:+volRatio.toFixed(2),compression:+compression.toFixed(2),breakoutDistance:+breakoutDistance.toFixed(2),efficiency:+pathEfficiency.toFixed(2)}
+  };
+}
+
+function recentBlockedSymbols(history,asOf){
+  const cut=num(asOf)-CFG.duplicateCooldownHours*3600e3;
+  return new Set((history||[]).filter(s=>num(s.ts)>=cut).map(s=>s.symbol).filter(Boolean));
+}
+function publicationEligible(candidate,blockedSymbols){
+  const blocked=blockedSymbols instanceof Set?blockedSymbols:new Set(blockedSymbols||[]);
+  return !!candidate&&num(candidate.score)>=CFG.publishScore&&!blocked.has(candidate.symbol);
+}
+function executionSnapshot(depth,book){
+  const asks=depth&&Array.isArray(depth.asks)?depth.asks:[];
+  const bids=depth&&Array.isArray(depth.bids)?depth.bids:[];
+  const depthAsk=num(asks[0]&&asks[0][0]),depthBid=num(bids[0]&&bids[0][0]);
+  const bookAsk=num(book&&book.askPrice),bookBid=num(book&&book.bidPrice);
+  const ask=Math.max(depthAsk,bookAsk),bid=Math.min(depthBid||Infinity,bookBid||Infinity);
+  if(!ask||!bid||!Number.isFinite(bid)||ask<=bid)return {ok:false,ask,bid,spreadPct:999,askNotional:0,bidNotional:0};
+  const spread=((ask-bid)/((ask+bid)/2))*100;
+  const maxAsk=ask*(1+CFG.depthBandPct/100),minBid=bid*(1-CFG.depthBandPct/100);
+  const askNotional=asks.reduce((sum,l)=>{const p=num(l&&l[0]),q=num(l&&l[1]);return p>=ask&&p<=maxAsk?sum+p*q:sum},0);
+  const bidNotional=bids.reduce((sum,l)=>{const p=num(l&&l[0]),q=num(l&&l[1]);return p<=bid&&p>=minBid?sum+p*q:sum},0);
+  return {ok:spread<=CFG.maxSpreadPct&&askNotional>=CFG.minDepthNotional&&bidNotional>=CFG.minDepthNotional,ask,bid,spreadPct:+spread.toFixed(4),askNotional:+askNotional.toFixed(2),bidNotional:+bidNotional.toFixed(2)};
+}
+function entryDriftAllowed(fromPrice,toPrice){return num(fromPrice)>0&&num(toPrice)>0&&Math.abs(pct(fromPrice,toPrice))<=CFG.maxEntryDriftPct}
+function finalizationEligible(candidate,snapshot,executionAsOf){
+  if(!candidate||!snapshot||!snapshot.ok||num(candidate.score)<CFG.publishScore)return false;
+  const discovered=num(candidate.discoveryPrice)||num(candidate.price),execAt=num(executionAsOf),analysisAt=num(candidate.analysisAt);
+  if(!discovered||!execAt||!analysisAt||!num(snapshot.ask))return false;
+  if(execAt<analysisAt-5_000||execAt-analysisAt>CFG.maxFinalizationAgeMs)return false;
+  return entryDriftAllowed(discovered,snapshot.ask);
+}
+
+function createSignal(candidate,snapshot,executionAsOf){
+  const ts=num(executionAsOf),entry=num(snapshot&&snapshot.ask);
+  if(!candidate||!ts||!entry)throw new Error('invalid signal input');
+  return {
+    id:`${candidate.symbol}-${ts}`,symbol:candidate.symbol,ts,day:dayKeyUTC(ts),entry,target:entry*(1+CFG.targetPct/100),score:num(candidate.score),
+    highest:entry,status:'active',hitTs:null,hitPrecision:null,trackedThrough:ts,
+    engineVersion:VERSION,configId:configId(),rulesetRevision:RULESET_REVISION,
+    marketAsOf:num(candidate.analysisAt)||null,discoveredAt:num(candidate.discoveredAt)||num(candidate.analysisAt)||null,discoveryPrice:num(candidate.discoveryPrice)||num(candidate.price)||null,
+    executionAsOf:ts,scanStartedAt:num(candidate.scanStartedAt)||null,executionSpreadPct:num(snapshot.spreadPct),askDepthNotional:num(snapshot.askNotional),bidDepthNotional:num(snapshot.bidNotional),features:candidate.features||{},
+    recordedAt:null,presentedAt:null
+  };
+}
+function withTracking(signal,result){
+  const next={...signal};
+  const h=Math.max(num(next.highest),num(result&&result.high));
+  next.highest=h;
+  if(num(result&&result.trackedThrough)>num(next.trackedThrough))next.trackedThrough=num(result.trackedThrough);
+  if(next.status!=='win'&&h>=num(next.target)){
+    next.status='win';
+    next.hitTs=num(result&&result.hitTs)||num(result&&result.observedAt)||num(next.trackedThrough);
+    next.hitPrecision=String(result&&result.hitPrecision||'observed');
+  }
+  return next;
+}
+
+function normalizeSignal(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+  const s={...raw};
+  const ts=num(s.ts),entry=num(s.entry),target=num(s.target),highest=num(s.highest);
+  if(!String(s.id||'')||!String(s.symbol||'').endsWith(CFG.quote)||ts<=0||entry<=0||target<=0||highest<entry)return null;
+  if(s.day!==dayKeyUTC(ts)||!['active','win'].includes(s.status))return null;
+  const expected=entry*(1+CFG.targetPct/100);
+  if(Math.abs(target-expected)>Math.max(1e-12,expected*1e-9))return null;
+  const isV7=String(s.engineVersion||'').startsWith('7.');
+  const recorded=s.recordedAt==null?(isV7?0:ts):num(s.recordedAt);
+  const presented=s.presentedAt==null?(s.displayedAt==null?0:num(s.displayedAt)):num(s.presentedAt);
+  const tracked=Math.max(ts,num(s.trackedThrough)||ts);
+  const hit=num(s.hitTs);
+  if(!recorded||recorded<ts)return null;
+  if(presented&&presented<recorded)return null;
+  if(s.status==='active'&&(hit>0||highest>=target))return null;
+  if(s.status==='win'&&(hit<ts||highest<target))return null;
+  return {...s,ts,entry,target,highest,recordedAt:recorded,presentedAt:presented||null,trackedThrough:tracked,hitTs:hit||null,hitPrecision:s.status==='win'?String(s.hitPrecision||'legacy'):null};
+}
+function normalizeScanSummary(raw){
+  if(raw==null)return null;
+  if(typeof raw!=='object'||Array.isArray(raw))return null;
+  const s={startedAt:num(raw.startedAt),endedAt:num(raw.endedAt),total:Math.max(0,Math.trunc(num(raw.total))),visited:Math.max(0,Math.trunc(num(raw.visited))),quickPassed:Math.max(0,Math.trunc(num(raw.quickPassed))),deepAnalyzed:Math.max(0,Math.trunc(num(raw.deepAnalyzed))),published:Math.max(0,Math.trunc(num(raw.published))),failed:Math.max(0,Math.trunc(num(raw.failed))),complete:!!raw.complete};
+  if(!s.startedAt||!s.endedAt||s.endedAt<s.startedAt||s.visited>s.total||s.quickPassed>s.visited||s.deepAnalyzed>s.quickPassed)return null;
+  return s;
+}
+function normalizeState(raw){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+  const input=Array.isArray(raw.signals)?raw.signals:[];
+  const signals=[];const ids=new Set();
+  for(const item of input){const s=normalizeSignal(item);if(!s||ids.has(s.id))return null;ids.add(s.id);signals.push(s)}
+  const lastScan=num(raw.lastScan);
+  if(lastScan<0)return null;
+  const summary=raw.lastScanSummary==null?null:normalizeScanSummary(raw.lastScanSummary);
+  if(raw.lastScanSummary!=null&&!summary)return null;
+  return {schemaVersion:STATE_SCHEMA_VERSION,signals,lastScan,lastScanSummary:summary};
+}
+function signalCore(s){const out={};for(const k of Object.keys(s).sort())if(!MUTABLE_SIGNAL_FIELDS.has(k))out[k]=s[k];return out}
+function stateTransitionAllowed(previous,next){
+  const a=normalizeState(previous),b=normalizeState(next);if(!a||!b)return false;
+  if(b.signals.length<a.signals.length)return false;
+  for(let i=0;i<a.signals.length;i++){
+    const old=a.signals[i],neu=b.signals[i];
+    if(!neu||neu.id!==old.id)return false;
+    if(stableStringify(signalCore(old))!==stableStringify(signalCore(neu)))return false;
+    if(num(neu.highest)<num(old.highest)||num(neu.trackedThrough)<num(old.trackedThrough))return false;
+    if(old.status==='win'&&neu.status!=='win')return false;
+    if(old.hitTs&&neu.hitTs!==old.hitTs)return false;
+    if(old.presentedAt&&neu.presentedAt!==old.presentedAt)return false;
+  }
+  return true;
+}
+
+function trackingBoundaries(start){
+  start=num(start);
+  const tradeEnd=Math.ceil(start/1000)*1000;
+  const secEnd=Math.max(tradeEnd,Math.ceil((start+15*60e3)/60e3)*60e3);
+  const minEnd=Math.max(secEnd,Math.ceil((start+60*60e3)/(15*60e3))*(15*60e3));
+  return {tradeEnd,secEnd,minEnd};
+}
+function trackingSlices(start,cursor,now){
+  start=num(start);cursor=Math.max(start,num(cursor)||start);now=num(now);
+  const safeNow=Math.max(start,now-CFG.trackingSafetyLagMs);
+  const {tradeEnd,secEnd,minEnd}=trackingBoundaries(start);
+  const out=[];let c=cursor;
+  if(c<tradeEnd&&c<safeNow){const e=Math.min(tradeEnd,safeNow);if(e>c){out.push({kind:'agg',from:c,to:e});c=e}}
+  if(c<tradeEnd)return {slices:out,trackedThrough:c};
+  function bars(kind,phaseEnd,interval){
+    if(c>=phaseEnd||c>=safeNow)return;
+    const e=Math.min(phaseEnd,Math.floor(safeNow/interval)*interval);
+    if(e>c){out.push({kind,from:c,to:e,intervalMs:interval});c=e}
+  }
+  bars('1s',secEnd,1000);
+  if(c<secEnd)return {slices:out,trackedThrough:c};
+  bars('1m',minEnd,60e3);
+  if(c<minEnd)return {slices:out,trackedThrough:c};
+  if(c<safeNow){const e=Math.floor(safeNow/(15*60e3))*(15*60e3);if(e>c){out.push({kind:'15m',from:c,to:e,intervalMs:15*60e3});c=e}}
+  return {slices:out,trackedThrough:c};
+}
+function trackingTail(start,now){
+  start=num(start);now=num(now);const {tradeEnd,secEnd,minEnd}=trackingBoundaries(start);
+  if(now<tradeEnd)return null;
+  if(now<secEnd){const intervalMs=1000,from=Math.floor(now/intervalMs)*intervalMs;return {kind:'1s',from,to:now,intervalMs}}
+  if(now<minEnd){const intervalMs=60e3,from=Math.floor(now/intervalMs)*intervalMs;return {kind:'1m',from,to:now,intervalMs}}
+  const intervalMs=15*60e3,from=Math.floor(now/intervalMs)*intervalMs;return {kind:'15m',from,to:now,intervalMs};
+}
+
+function createMarketClock(epochNow,monoNow){
+  const wall=typeof epochNow==='function'?epochNow:()=>Date.now();
+  const mono=typeof monoNow==='function'?monoNow:()=>((typeof performance!=='undefined'&&performance.now)?performance.now():Date.now());
+  let synced=false,anchorMarket=0,anchorMono=0;
+  return {
+    sync(serverTime,requestStartMono,responseEndMono){
+      const st=num(serverTime),a=num(requestStartMono),b=num(responseEndMono);if(!st||b<a)return false;
+      anchorMarket=st+(b-a)/2;anchorMono=b;synced=true;return true;
+    },
+    now(){return synced?anchorMarket+(mono()-anchorMono):wall()},
+    monoNow:mono,
+    isSynced(){return synced}
+  };
+}
+
+function httpFailureAction(status){const s=num(status);if(s===418||s===429)return 'stop-rate';if(s===408||s>=500)return 'failover';if(s>=400)return 'stop';return 'failover'}
+function auditDescriptor(){return {version:VERSION,configId:configId(),revision:RULESET_REVISION,fairness:'fixed-rules-structural-universe-streaming-append-only',constants:{targetPct:CFG.targetPct,publishScore:CFG.publishScore,duplicateCooldownHours:CFG.duplicateCooldownHours,maxEntryDriftPct:CFG.maxEntryDriftPct,maxFinalizationAgeMs:CFG.maxFinalizationAgeMs}}}
+
+return {VERSION,STATE_SCHEMA_VERSION,RULESET_REVISION,CFG,num,clamp,mean,median,pct,dayKeyUTC,fmtPrice,stableStringify,configId,permissionSets,hasPermission,marketInUniverse,tickerQualityPasses,tickerSnapshotFresh,scanPriority,prepareUniverse,parseKlines,seriesSnapshot,evaluate,recentBlockedSymbols,publicationEligible,executionSnapshot,entryDriftAllowed,finalizationEligible,createSignal,withTracking,normalizeSignal,normalizeState,normalizeScanSummary,stateTransitionAllowed,trackingBoundaries,trackingSlices,trackingTail,createMarketClock,httpFailureAction,auditDescriptor};
+});
+
+</script>
+  <script>
+'use strict';
+
+const E=window.CoinCore;
+const API_BASES=['https://data-api.binance.vision','https://api.binance.com','https://api1.binance.com','https://api2.binance.com'];
+const STORE='coin-finder-challenge-v7';
+const STORE_STAGE='coin-finder-challenge-v7-stage';
+const STORE_BACKUP='coin-finder-challenge-v7-backup';
+const LEGACY_STORES=['coin-finder-challenge-v6','coin-finder-challenge-v6-backup','coin-finder-challenge-v5','coin-finder-challenge-v5-backup'];
+const SCAN_CONCURRENCY=6;
+const TRACK_CONCURRENCY=3;
+const TG_STORE='coin-finder-challenge-v7-telegram';
+// إعداد ثابت للتشغيل على سيرفر/Headless.
+// ضع Bot Token الحقيقي بين علامتي الاقتباس قبل الرفع إلى المستودع الخاص.
+const TELEGRAM_STATIC_CONFIG=Object.freeze({
+  botToken:'PUT_YOUR_TELEGRAM_BOT_TOKEN_HERE',
+  chatId:'719297143',
+  enabled:true
+});
+function staticTelegramTokenReady(){
+  const token=String(TELEGRAM_STATIC_CONFIG.botToken||'').trim();
+  return /^\d+:[A-Za-z0-9_-]{20,}$/.test(token)&&!token.includes('PUT_YOUR_');
+}
+let telegramBusy=false;
+
+function $(s){return document.querySelector(s)}
+const els={
+  statusDot:$('#statusDot'),statusText:$('#statusText'),todayCount:$('#todayCount'),winsCount:$('#winsCount'),activeCount:$('#activeCount'),lastScan:$('#lastScan'),
+  scanBtn:$('#scanBtn'),refreshBtn:$('#refreshBtn'),exportBtn:$('#exportBtn'),scanBar:$('#scanBar'),scanPhase:$('#scanPhase'),
+  universeCount:$('#universeCount'),visitedCount:$('#visitedCount'),quickCount:$('#quickCount'),deepCount:$('#deepCount'),publishedCount:$('#publishedCount'),
+  todaySignals:$('#todaySignals'),historyBody:$('#historyBody'),engineVersion:$('#engineVersion'),configBadge:$('#configBadge'),
+  telegramToken:$('#telegramToken'),telegramChatId:$('#telegramChatId'),telegramEnabled:$('#telegramEnabled'),telegramSaveBtn:$('#telegramSaveBtn'),telegramTestBtn:$('#telegramTestBtn'),telegramStatus:$('#telegramStatus'),telegramStateLabel:$('#telegramStateLabel')
+};
+
+let busy=false;
+let storageNotice='';
+const clock=E.createMarketClock();
+let state=loadState();
+let liveSession=null;
+
+function readValid(key){
+  try{const raw=localStorage.getItem(key);return raw?E.normalizeState(JSON.parse(raw)):null}catch{return null}
+}
+function loadState(){
+  const primary=readValid(STORE);if(primary)return primary;
+  const stage=readValid(STORE_STAGE);if(stage){storageNotice='تم استعادة سجل V7 من عملية حفظ غير مكتملة';return stage}
+  const backup=readValid(STORE_BACKUP);if(backup){storageNotice='تم استعادة سجل V7 من النسخة الاحتياطية';return backup}
+  for(const key of LEGACY_STORES){const legacy=readValid(key);if(legacy){storageNotice='تم ترحيل السجل السابق إلى V7';return legacy}}
+  return E.normalizeState({signals:[],lastScan:0,lastScanSummary:null});
+}
+function commitState(mutator){
+  const previous=E.normalizeState(state);if(!previous)return false;
+  const draft=JSON.parse(JSON.stringify(previous));
+  try{mutator(draft)}catch(err){console.error('state mutation rejected',err);return false}
+  const next=E.normalizeState(draft);
+  if(!next||!E.stateTransitionAllowed(previous,next))return false;
+  const nextJson=JSON.stringify(next);
+  try{
+    localStorage.setItem(STORE_STAGE,nextJson);
+    const durablePrevious=readValid(STORE);
+    if(durablePrevious)localStorage.setItem(STORE_BACKUP,JSON.stringify(durablePrevious));
+    localStorage.setItem(STORE,nextJson);
+    try{localStorage.removeItem(STORE_STAGE)}catch{}
+    state=next;
+    return true;
+  }catch(err){
+    console.error('state commit failed',err);
+    try{localStorage.removeItem(STORE_STAGE)}catch{}
+    return false
+  }
+}
+function persistMigration(){
+  const normalized=E.normalizeState(state);if(!normalized)return false;
+  try{localStorage.setItem(STORE,JSON.stringify(normalized));state=normalized;return true}catch{return false}
+}
+
+function marketNow(){return clock.now()}
+function status(text,type='ok'){if(els.statusText)els.statusText.textContent=text;if(els.statusDot)els.statusDot.className=`dot ${type}`}
+function dt(ms){try{return new Intl.DateTimeFormat('ar-SA',{dateStyle:'short',timeStyle:'short',hour12:false,timeZone:'UTC'}).format(new Date(ms))+' UTC'}catch{return new Date(ms).toISOString()}}
+function gainPct(s){return s.entry?((Math.max(E.num(s.highest),E.num(s.entry))/E.num(s.entry))-1)*100:0}
+
+function loadTelegramState(){
+  const staticReady=staticTelegramTokenReady()&&String(TELEGRAM_STATIC_CONFIG.chatId||'').trim();
+  const fallback={
+    enabled:!!(TELEGRAM_STATIC_CONFIG.enabled&&staticReady),
+    botToken:staticTelegramTokenReady()?String(TELEGRAM_STATIC_CONFIG.botToken||''):'',
+    chatId:String(TELEGRAM_STATIC_CONFIG.chatId||''),
+    notifyFromTs:staticReady?Date.now():0,
+    sent:{},outbox:[]
+  };
+  try{
+    const stored=localStorage.getItem(TG_STORE);
+    if(!stored)return fallback;
+    const raw=JSON.parse(stored||'{}');
+    const sent=raw&&raw.sent&&typeof raw.sent==='object'&&!Array.isArray(raw.sent)?raw.sent:{};
+    const outbox=Array.isArray(raw&&raw.outbox)?raw.outbox.filter(x=>x&&typeof x.key==='string'&&typeof x.signalId==='string'&&['signal','win'].includes(x.kind)):[];
+    const savedToken=String(raw&&raw.botToken||'').trim();
+    const savedChatId=String(raw&&raw.chatId||'').trim();
+    const botToken=savedToken||(staticTelegramTokenReady()?String(TELEGRAM_STATIC_CONFIG.botToken||''):'');
+    const chatId=savedChatId||String(TELEGRAM_STATIC_CONFIG.chatId||'');
+    const enabled=raw&&typeof raw.enabled==='boolean'?raw.enabled:!!(TELEGRAM_STATIC_CONFIG.enabled&&botToken&&chatId);
+    return {enabled:!!enabled,botToken,chatId,notifyFromTs:E.num(raw&&raw.notifyFromTs)||(enabled&&botToken&&chatId?Date.now():0),sent,outbox};
+  }catch{return fallback}
+}
+let telegramState=loadTelegramState();
+function saveTelegramState(){try{localStorage.setItem(TG_STORE,JSON.stringify(telegramState));return true}catch{return false}}
+function telegramStatus(text,type=''){if(els.telegramStatus){els.telegramStatus.textContent=text;els.telegramStatus.className=`telegram-status ${type}`.trim()}if(els.telegramStateLabel)els.telegramStateLabel.textContent=telegramState.enabled?'مفعّل':'غير مفعّل'}
+function renderTelegramSettings(){
+  if(els.telegramToken)els.telegramToken.value=telegramState.botToken||'';
+  if(els.telegramChatId)els.telegramChatId.value=telegramState.chatId||'';
+  if(els.telegramEnabled)els.telegramEnabled.checked=!!telegramState.enabled;
+  if(els.telegramStateLabel)els.telegramStateLabel.textContent=telegramState.enabled?'مفعّل':'غير مفعّل';
+}
+function telegramEventTs(kind,s){return kind==='win'?E.num(s&&s.hitTs):E.num(s&&s.ts)}
+function telegramKey(kind,s){return `${kind}:${s.id}`}
+function fmtTelegramTime(ms){try{return new Date(E.num(ms)).toISOString().replace('T',' ').replace('.000Z',' UTC').replace('Z',' UTC')}catch{return String(ms||'—')}}
+function fmtDuration(ms){ms=Math.max(0,E.num(ms));const s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return h?`${h}س ${m}د`:m?`${m}د ${sec}ث`:`${sec}ث`}
+function telegramMessage(kind,s){
+  const pair=String(s.symbol||'').endsWith('USDT')?String(s.symbol).replace(/USDT$/,'/USDT'):String(s.symbol||'');
+  if(kind==='signal')return [`🚨 إشارة جديدة — V${s.engineVersion||E.VERSION}`,`العملة: ${pair}`,`الدخول الرسمي: ${E.fmtPrice(s.entry)}`,`الهدف +10%: ${E.fmtPrice(s.target)}`,`Score: ${E.num(s.score).toFixed(2)}`,`الوقت: ${fmtTelegramTime(s.ts)}`,`Config: ${s.configId||E.configId()}`].join('\n');
+  return [`✅ تحقق هدف +10% — V${s.engineVersion||E.VERSION}`,`العملة: ${pair}`,`الدخول: ${E.fmtPrice(s.entry)}`,`الهدف: ${E.fmtPrice(s.target)}`,`أعلى سعر: ${E.fmtPrice(s.highest)}`,`وقت تحقق الهدف: ${fmtTelegramTime(s.hitTs)}`,`مدة الوصول: ${fmtDuration(E.num(s.hitTs)-E.num(s.ts))}`,`دقة التتبع: ${s.hitPrecision||'observed'}`].join('\n');
+}
+async function telegramSendText(text,override){
+  const cfg=override||telegramState,token=String(cfg.botToken||'').trim(),chatId=String(cfg.chatId||'').trim();
+  if(!token||!chatId)throw new Error('أدخل Bot Token و Chat ID');
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);let response,payload;
+  try{
+    response=await fetch(`https://api.telegram.org/bot${token}/sendMessage`,{method:'POST',cache:'no-store',credentials:'omit',signal:controller.signal,headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({chat_id:chatId,text,disable_web_page_preview:true})});
+    payload=await response.json().catch(()=>null);
+  }finally{clearTimeout(timer)}
+  if(!response||!response.ok||!payload||payload.ok!==true){const desc=payload&&payload.description?String(payload.description):`HTTP ${response?response.status:'network'}`;throw new Error(desc)}
+  return payload.result;
+}
+function queueTelegramNotification(kind,s){
+  if(!s||!telegramState.notifyFromTs)return false;
+  const eventTs=telegramEventTs(kind,s);if(!eventTs||eventTs<telegramState.notifyFromTs)return false;
+  const key=telegramKey(kind,s);if(telegramState.sent[key]||telegramState.outbox.some(x=>x.key===key))return false;
+  telegramState.outbox.push({key,kind,signalId:s.id,queuedAt:Date.now(),attempts:0,lastError:''});saveTelegramState();return true;
+}
+function recoverTelegramOutbox(){
+  if(!telegramState.notifyFromTs)return;
+  let changed=false;
+  for(const s of state.signals){if(queueTelegramNotification('signal',s))changed=true;if(s.status==='win'&&queueTelegramNotification('win',s))changed=true}
+  if(changed)saveTelegramState();
+}
+async function flushTelegramOutbox(){
+  if(telegramBusy||!telegramState.enabled||!telegramState.botToken.trim()||!telegramState.chatId.trim())return;
+  recoverTelegramOutbox();if(!telegramState.outbox.length)return;
+  telegramBusy=true;
+  try{
+    while(telegramState.outbox.length){
+      const item=telegramState.outbox[0],signal=state.signals.find(s=>s.id===item.signalId);
+      if(!signal){telegramState.outbox.shift();saveTelegramState();continue}
+      try{
+        await telegramSendText(telegramMessage(item.kind,signal));
+        telegramState.sent[item.key]=Date.now();telegramState.outbox.shift();saveTelegramState();telegramStatus(item.kind==='signal'?`تم إرسال تنبيه ${signal.symbol}`:`تم إرسال تنبيه الهدف ${signal.symbol}`,'ok');
+      }catch(err){item.attempts=E.num(item.attempts)+1;item.lastError=String(err&&err.message||err);saveTelegramState();telegramStatus(`تعذر إرسال تيليجرام: ${item.lastError}`,'err');break}
+    }
+  }finally{telegramBusy=false}
+}
+function saveTelegramSettings(){
+  const token=String(els.telegramToken&&els.telegramToken.value||'').trim(),chatId=String(els.telegramChatId&&els.telegramChatId.value||'').trim(),enabled=!!(els.telegramEnabled&&els.telegramEnabled.checked);
+  if(enabled&&(!token||!chatId)){telegramStatus('أدخل Bot Token و Chat ID قبل التفعيل','err');return false}
+  telegramState.botToken=token;telegramState.chatId=chatId;telegramState.enabled=enabled;if(enabled&&!telegramState.notifyFromTs)telegramState.notifyFromTs=Date.now();
+  if(!saveTelegramState()){telegramStatus('تعذر حفظ إعدادات تيليجرام','err');return false}
+  telegramStatus(enabled?'تم الحفظ والتفعيل':'تم الحفظ — الإرسال غير مفعّل','ok');recoverTelegramOutbox();flushTelegramOutbox();return true;
+}
+async function testTelegram(){
+  const token=String(els.telegramToken&&els.telegramToken.value||'').trim(),chatId=String(els.telegramChatId&&els.telegramChatId.value||'').trim();
+  if(!token||!chatId){telegramStatus('أدخل Bot Token و Chat ID أولًا','err');return}
+  if(els.telegramTestBtn)els.telegramTestBtn.disabled=true;telegramStatus('جارٍ إرسال رسالة الاختبار…');
+  try{await telegramSendText(`✅ اختبار Telegram — Coin Finder V${E.VERSION}\n${fmtTelegramTime(Date.now())}`,{botToken:token,chatId});telegramStatus('وصل اختبار تيليجرام بنجاح','ok')}
+  catch(err){telegramStatus(`فشل الاختبار: ${String(err&&err.message||err)}`,'err')}
+  finally{if(els.telegramTestBtn)els.telegramTestBtn.disabled=false}
+}
+function setSession(session){liveSession=session;renderSession()}
+function renderSession(){
+  const s=liveSession||state.lastScanSummary||{total:0,visited:0,quickPassed:0,deepAnalyzed:0,published:0};
+  if(els.universeCount)els.universeCount.textContent=s.total||0;
+  if(els.visitedCount)els.visitedCount.textContent=s.visited||0;
+  if(els.quickCount)els.quickCount.textContent=s.quickPassed||0;
+  if(els.deepCount)els.deepCount.textContent=s.deepAnalyzed||0;
+  if(els.publishedCount)els.publishedCount.textContent=s.published||0;
+  if(els.scanBar){const p=s.total?Math.min(100,(s.visited/s.total)*100):0;els.scanBar.style.width=`${p}%`}
+  if(els.scanPhase){
+    if(liveSession)els.scanPhase.textContent=`الكون ${s.visited}/${s.total} · البوابة ${s.quickPassed} · التحليل ${s.deepAnalyzed} · المنشور ${s.published}`;
+    else if(state.lastScanSummary)els.scanPhase.textContent=`آخر فحص ${s.visited}/${s.total}${s.complete?' مكتمل':' غير مكتمل'}`;
+    else els.scanPhase.textContent='جاهز';
+  }
+}
+function render(){
+  const day=E.dayKeyUTC(marketNow()),today=state.signals.filter(s=>s.day===day);
+  if(els.todayCount)els.todayCount.textContent=today.length;
+  if(els.winsCount)els.winsCount.textContent=state.signals.filter(s=>s.status==='win').length;
+  if(els.activeCount)els.activeCount.textContent=state.signals.filter(s=>s.status==='active').length;
+  if(els.lastScan)els.lastScan.textContent=state.lastScan?dt(state.lastScan):'—';
+  if(els.engineVersion)els.engineVersion.textContent=`Engine ${E.VERSION}`;
+  if(els.configBadge)els.configBadge.textContent=E.configId();
+  renderSession();
+  if(els.todaySignals){
+    if(!today.length){els.todaySignals.className='cards empty-state';els.todaySignals.textContent='لا توجد إشارة مسجلة لهذا اليوم بعد.'}
+    else{
+      els.todaySignals.className='cards';
+      els.todaySignals.innerHTML=today.slice().sort((a,b)=>b.ts-a.ts).map(s=>{
+        const gain=gainPct(s),progress=Math.max(0,Math.min(100,gain/E.CFG.targetPct*100));
+        const delay=E.num(s.presentedAt)?Math.max(0,E.num(s.presentedAt)-E.num(s.executionAsOf||s.ts)):null;
+        return `<article class="signal ${s.status==='win'?'signal-win':''}"><div class="signal-top"><div><span class="signal-kicker">إشارة رسمية محفوظة</span><div class="symbol">${s.symbol.replace('USDT',' / USDT')}</div></div><span class="badge">${s.status==='win'?'✓ +10%':`Score ${s.score}`}</span></div><div class="signal-progress"><div class="signal-progress-fill" style="width:${progress.toFixed(1)}%"></div></div><div class="progress-label"><span>التقدم نحو الهدف</span><strong>${Math.max(0,gain).toFixed(2)}%</strong></div><div class="metrics"><div class="metric"><span>الدخول الرسمي</span><strong>${E.fmtPrice(s.entry)}</strong></div><div class="metric"><span>هدف +10%</span><strong>${E.fmtPrice(s.target)}</strong></div><div class="metric"><span>أعلى سعر</span><strong>${E.fmtPrice(s.highest)}</strong></div></div><div class="signal-foot"><span>${dt(s.ts)}</span><span>${delay==null?'عرض غير مؤرخ':`تنفيذ→عرض ${(delay/1000).toFixed(2)}ث`}</span><span>${s.engineVersion||'legacy'} · ${s.configId||'legacy'}</span></div></article>`;
+      }).join('');
+    }
+  }
+  if(els.historyBody){
+    const rows=state.signals.slice().sort((a,b)=>b.ts-a.ts);
+    els.historyBody.innerHTML=rows.length?rows.map(s=>`<tr><td><strong>${s.symbol}</strong></td><td>${dt(s.ts)}</td><td>${E.fmtPrice(s.entry)}</td><td>${E.fmtPrice(s.target)}</td><td>${gainPct(s).toFixed(2)}%</td><td class="${s.status==='win'?'win':'active'}">${s.status==='win'?'✓ +10%':'قيد المتابعة'}</td></tr>`).join(''):'<tr><td colspan="6" class="muted center">لا توجد إشارات مسجلة.</td></tr>';
+  }
+}
+function afterPaint(){return new Promise(resolve=>{let done=false;const finish=()=>{if(done)return;done=true;resolve()};const timer=setTimeout(finish,350);if(document.visibilityState!=='visible'){clearTimeout(timer);finish();return}requestAnimationFrame(()=>requestAnimationFrame(()=>{clearTimeout(timer);finish()}))})}
+
+async function api(path,timeout=9000){
+  let last=null;
+  for(const base of API_BASES){
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);let response;
+    try{response=await fetch(base+path,{cache:'no-store',signal:controller.signal,headers:{Accept:'application/json'}})}catch(err){clearTimeout(timer);last=err;continue}
+    clearTimeout(timer);
+    if(!response.ok){
+      const err=new Error(`HTTP ${response.status}`);err.status=response.status;err.base=base;
+      const retry=response.headers&&response.headers.get?response.headers.get('Retry-After'):null;if(retry)err.retryAfterMs=Math.max(0,Number(retry)*1000||0);
+      const action=E.httpFailureAction(response.status);if(action==='failover'){last=err;continue}throw err;
+    }
+    try{return await response.json()}catch(err){last=err}
+  }
+  throw last||new Error('Binance API unavailable');
+}
+async function syncClock(){
+  const start=clock.monoNow();const response=await api('/api/v3/time');const end=clock.monoNow();
+  if(!clock.sync(E.num(response&&response.serverTime),start,end))throw new Error('invalid Binance server time');
+  return marketNow();
+}
+
+async function fetchUniverse(){
+  const [exchangeInfo,bulkTickers]=await Promise.all([api('/api/v3/exchangeInfo?symbolStatus=TRADING&showPermissionSets=true'),api('/api/v3/ticker/24hr')]);
+  return E.prepareUniverse(exchangeInfo,bulkTickers);
+}
+async function inspectSymbol(item,scanStartedAt,session){
+  const symbol=encodeURIComponent(item.info.symbol);
+  const ticker=await api(`/api/v3/ticker/24hr?symbol=${symbol}`);
+  const tickerAsOf=marketNow();
+  if(!E.marketInUniverse(item.info)||!E.tickerSnapshotFresh(ticker,tickerAsOf)||!E.tickerQualityPasses(ticker))return null;
+  session.quickPassed++;
+  const [k15,k1h,book]=await Promise.all([
+    api(`/api/v3/klines?symbol=${symbol}&interval=15m&limit=100`),
+    api(`/api/v3/klines?symbol=${symbol}&interval=1h&limit=80`),
+    api(`/api/v3/ticker/bookTicker?symbol=${symbol}`)
+  ]);
+  session.deepAnalyzed++;
+  const asOf=marketNow();
+  const candidate=E.evaluate(item.info.symbol,k15,k1h,book,E.num(ticker.quoteVolume),{asOf,tickerCloseTime:E.num(ticker.closeTime),tickerLastPrice:E.num(ticker.lastPrice)});
+  if(!candidate)return null;
+  candidate.discoveryPrice=E.num(candidate.price);candidate.discoveredAt=asOf;candidate.scanStartedAt=scanStartedAt;
+  return candidate;
+}
+async function finalizeCandidate(candidate){
+  const symbol=encodeURIComponent(candidate.symbol);
+  const depth=await api(`/api/v3/depth?symbol=${symbol}&limit=100`);
+  const book=await api(`/api/v3/ticker/bookTicker?symbol=${symbol}`);
+  const executionAsOf=marketNow();
+  const snapshot=E.executionSnapshot(depth,book);
+  if(!E.finalizationEligible(candidate,snapshot,executionAsOf))return null;
+  return E.createSignal(candidate,snapshot,executionAsOf);
+}
+async function publishSignal(signal){
+  const recordedAt=marketNow();
+  const ok=commitState(draft=>{
+    const blocked=E.recentBlockedSymbols(draft.signals,signal.ts);
+    if(blocked.has(signal.symbol))throw new Error('duplicate cooldown');
+    const stored={...signal,recordedAt,presentedAt:null};
+    draft.signals.push(stored);draft.lastScan=recordedAt;
+  });
+  if(!ok)throw new Error('official signal could not be persisted');
+  render();
+  if(document.visibilityState==='visible'){
+    await afterPaint();const presentedAt=marketNow();
+    if(!commitState(draft=>{const s=draft.signals.find(x=>x.id===signal.id);if(s&&!s.presentedAt)s.presentedAt=presentedAt}))console.warn('presentation timestamp could not be persisted',signal.id);
+    render();
+  }
+  queueTelegramNotification('signal',state.signals.find(s=>s.id===signal.id)||signal);
+  flushTelegramOutbox();
+}
+
+function updateProgress(session){setSession(session)}
+async function streamScan(universe,scanStartedAt,blocked,session){
+  let cursor=0,fatal=null;
+  async function worker(){
+    while(!fatal){
+      const index=cursor++;if(index>=universe.length)return;const item=universe[index];
+      try{
+        const candidate=await inspectSymbol(item,scanStartedAt,session);
+        if(candidate&&E.publicationEligible(candidate,blocked)){
+          const signal=await finalizeCandidate(candidate);
+          if(signal&&!blocked.has(signal.symbol)){
+            await publishSignal(signal);blocked.add(signal.symbol);session.published++;status(`تم تثبيت ${signal.symbol} والمسح مستمر`,'ok');
+          }
+        }
+      }catch(err){
+        if(err&&(err.status===418||err.status===429)){fatal=err;return}
+        session.failed++;console.warn('symbol inspection failed',item.info&&item.info.symbol,err);
+      }finally{session.visited++;updateProgress(session)}
+    }
+  }
+  await Promise.all(Array.from({length:Math.min(SCAN_CONCURRENCY,Math.max(1,universe.length))},worker));
+  if(fatal)throw fatal;
+}
+function commitScanSummary(session,complete){
+  const endedAt=marketNow();
+  const summary={startedAt:session.startedAt,endedAt,total:session.total,visited:session.visited,quickPassed:session.quickPassed,deepAnalyzed:session.deepAnalyzed,published:session.published,failed:session.failed,complete:!!complete};
+  const ok=commitState(draft=>{draft.lastScan=endedAt;draft.lastScanSummary=summary});
+  if(ok){liveSession=null;render()}return ok;
+}
+async function scan(){
+  if(busy)return;busy=true;if(els.scanBtn)els.scanBtn.disabled=true;status('مزامنة ساعة Binance…','busy');
+  let session=null;
+  try{
+    await syncClock();render();status('تحميل كون التحدي الكامل…','busy');
+    const universe=await fetchUniverse();
+    session={startedAt:marketNow(),total:universe.length,visited:0,quickPassed:0,deepAnalyzed:0,published:0,failed:0};setSession(session);
+    const blocked=E.recentBlockedSymbols(state.signals,session.startedAt);
+    await streamScan(universe,session.startedAt,blocked,session);
+    if(!commitScanSummary(session,true))throw new Error('scan summary could not be persisted');
+    status(session.published?`اكتمل الكون — ${session.published} إشارة جديدة`:'اكتمل الكون بدون إشارة جديدة','ok');
+  }catch(err){
+    console.error(err);if(session)commitScanSummary(session,false);
+    if(err&&(err.status===418||err.status===429))status('توقف الفحص بأمان بسبب حد Binance','busy');
+    else status('تعذر إكمال فحص الكون','err');
+  }finally{busy=false;if(els.scanBtn)els.scanBtn.disabled=false}
+}
+
+function klinePrecision(kind){return kind==='1s'?'1s':kind==='1m'?'1m':'15m'}
+function noteHit(acc,target,price,ts,precision){if(!acc.hitTs&&E.num(price)>=target){acc.hitTs=E.num(ts);acc.hitPrecision=precision}}
+async function fetchAggSlice(symbol,slice,acc,target){
+  let first=true,nextFromId=null,pages=0,lastWasFull=false;
+  while(true){
+    if(pages++>=50)throw new Error('aggregate-trade pagination cap exceeded');
+    let path;
+    if(first)path=`/api/v3/aggTrades?symbol=${symbol}&startTime=${Math.floor(slice.from)}&endTime=${Math.max(Math.floor(slice.from),Math.ceil(slice.to)-1)}&limit=1000`;
+    else path=`/api/v3/aggTrades?symbol=${symbol}&fromId=${nextFromId}&limit=1000`;
+    const rows=await api(path);lastWasFull=rows.length===1000;if(!rows.length)break;
+    let stop=false;
+    for(const row of rows){const t=E.num(row.T),p=E.num(row.p);if(t>=slice.to){stop=true;break}if(t>=slice.from){acc.high=Math.max(acc.high,p);noteHit(acc,target,p,t,'trade')}}
+    if(stop||rows.length<1000)break;
+    const last=rows[rows.length-1];const aid=E.num(last.a);if(!aid)throw new Error('aggregate-trade pagination id missing');nextFromId=aid+1;first=false;
+  }
+  if(lastWasFull&&pages>=50)throw new Error('aggregate-trade pagination incomplete');
+  return slice.to;
+}
+async function fetchKlineSlice(symbol,slice,acc,target){
+  const interval=slice.kind,step=slice.intervalMs;let cursor=slice.from;
+  while(cursor<slice.to){
+    const end=Math.min(slice.to,cursor+1000*step);const expected=Math.round((end-cursor)/step);
+    const rows=await api(`/api/v3/klines?symbol=${symbol}&interval=${interval}&startTime=${Math.floor(cursor)}&endTime=${Math.ceil(end)-1}&limit=1000`);
+    if(rows.length!==expected)throw new Error(`tracking kline gap ${interval}`);
+    for(let i=0;i<rows.length;i++){
+      const row=rows[i],open=E.num(row[0]),high=E.num(row[2]);
+      if(open!==cursor+i*step)throw new Error(`tracking kline alignment ${interval}`);
+      acc.high=Math.max(acc.high,high);noteHit(acc,target,high,open,klinePrecision(interval));
+    }
+    cursor=end;
+  }
+  return cursor;
+}
+async function trackSignal(signal){
+  const now=marketNow(),symbol=encodeURIComponent(signal.symbol),target=E.num(signal.target);
+  const acc={high:Math.max(E.num(signal.highest),E.num(signal.entry)),hitTs:null,hitPrecision:null};
+  const plan=E.trackingSlices(signal.ts,signal.trackedThrough,now);let trackedThrough=E.num(signal.trackedThrough)||E.num(signal.ts);
+  for(const slice of plan.slices){trackedThrough=slice.kind==='agg'?await fetchAggSlice(symbol,slice,acc,target):await fetchKlineSlice(symbol,slice,acc,target)}
+  const tail=E.trackingTail(signal.ts,now);
+  if(tail&&tail.from<now){
+    const rows=await api(`/api/v3/klines?symbol=${symbol}&interval=${tail.kind}&startTime=${Math.floor(tail.from)}&endTime=${Math.ceil(now)-1}&limit=2`);
+    for(const row of rows){const high=E.num(row[2]);acc.high=Math.max(acc.high,high);noteHit(acc,target,high,E.num(row[0]),klinePrecision(tail.kind))}
+  }
+  return E.withTracking(signal,{high:acc.high,hitTs:acc.hitTs,hitPrecision:acc.hitPrecision,trackedThrough,observedAt:now});
+}
+async function refresh(){
+  if(busy)return;const activeIds=state.signals.filter(s=>s.status==='active').map(s=>s.id);if(!activeIds.length){status('لا توجد إشارات نشطة','ok');return}
+  busy=true;if(els.refreshBtn)els.refreshBtn.disabled=true;status('مزامنة ساعة Binance للتتبع…','busy');
+  const staged=new Map();let cursor=0,updated=0,failed=0,fatal=null;
+  try{
+    await syncClock();const active=state.signals.filter(s=>activeIds.includes(s.id)&&s.status==='active');status('تحديث النتائج…','busy');
+    async function worker(){while(!fatal){const i=cursor++;if(i>=active.length)return;const signal=active[i];try{staged.set(signal.id,await trackSignal(signal));updated++}catch(err){if(err&&(err.status===418||err.status===429)){fatal=err;return}failed++;console.warn('signal tracking failed',signal.symbol,err)}}}
+    await Promise.all(Array.from({length:Math.min(TRACK_CONCURRENCY,active.length)},worker));
+    const ok=commitState(draft=>{
+      for(const current of draft.signals){
+        const next=staged.get(current.id);if(!next)continue;
+        current.highest=next.highest;current.status=next.status;current.hitTs=next.hitTs;current.hitPrecision=next.hitPrecision;current.trackedThrough=next.trackedThrough;
+      }
+    });
+    if(!ok){status('فشل حفظ التتبع؛ لم يتم عرض أي تغيير غير محفوظ','err');return}
+    render();
+    recoverTelegramOutbox();flushTelegramOutbox();
+    if(fatal)status(`توقف التتبع عند حد Binance بعد ${updated} تحديث`,'busy');
+    else if(failed)status(`تم تحديث ${updated}؛ تعذر ${failed} دون تعطيل البقية`,'busy');
+    else status(`تم تحديث ${updated} إشارة`,'ok');
+  }catch(err){console.error(err);status(err&&(err.status===418||err.status===429)?'أوقف التتبع بسبب حد Binance':'تعذر تحديث النتائج','err')}
+  finally{busy=false;if(els.refreshBtn)els.refreshBtn.disabled=false}
+}
+
+async function presentPending(){
+  if(document.visibilityState!=='visible')return;render();await afterPaint();const now=marketNow();
+  const ids=state.signals.filter(s=>String(s.engineVersion||'').startsWith('7.')&&!s.presentedAt).map(s=>s.id);if(!ids.length)return;
+  if(commitState(draft=>{for(const s of draft.signals)if(ids.includes(s.id)&&!s.presentedAt)s.presentedAt=now}))render();
+}
+function exportLog(){
+  const payload={exportedAt:new Date().toISOString(),audit:E.auditDescriptor(),lastScanSummary:state.lastScanSummary,signals:state.signals};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`coin-finder-v7-${E.dayKeyUTC(marketNow())}.json`;link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
+}
+
+if(els.scanBtn)els.scanBtn.addEventListener('click',scan);
+if(els.refreshBtn)els.refreshBtn.addEventListener('click',refresh);
+if(els.exportBtn)els.exportBtn.addEventListener('click',exportLog);
+if(els.telegramSaveBtn)els.telegramSaveBtn.addEventListener('click',saveTelegramSettings);
+if(els.telegramTestBtn)els.telegramTestBtn.addEventListener('click',testTelegram);
+if(document.addEventListener)document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){presentPending();flushTelegramOutbox()}});
+if(storageNotice)persistMigration();
+render();renderTelegramSettings();telegramStatus(telegramState.enabled?'تيليجرام مفعّل':'تيليجرام غير مفعّل',telegramState.enabled?'ok':'');recoverTelegramOutbox();flushTelegramOutbox();status(storageNotice||'جاهز',storageNotice?'busy':'ok');
+setInterval(()=>{if(document.visibilityState==='visible')refresh()},10*60*1000);
+setInterval(()=>{if(document.visibilityState==='visible')scan()},30*60*1000);
+setInterval(()=>{flushTelegramOutbox()},60*1000);
+setTimeout(()=>{if(document.visibilityState==='visible')scan()},700);
+
+</script>
+</body>
+</html>
