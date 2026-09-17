@@ -1,0 +1,89 @@
+name: Telegram Test From V7 HTML
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  telegram-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Install Playwright + Chromium
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Open index.html and send Telegram test
+        shell: bash
+        run: |
+          cat > /tmp/telegram-test.mjs <<'EOF'
+          import { chromium } from 'playwright';
+          import { pathToFileURL } from 'node:url';
+          import path from 'node:path';
+
+          const indexPath = path.resolve(process.cwd(), 'index.html');
+          const indexUrl = pathToFileURL(indexPath).href;
+
+          const browser = await chromium.launch({
+            headless: true,
+            args: ['--disable-web-security', '--allow-file-access-from-files'],
+          });
+
+          try {
+            const context = await browser.newContext();
+            const page = await context.newPage();
+
+            page.on('console', (msg) => console.log(`[browser:${msg.type()}] ${msg.text()}`));
+            page.on('pageerror', (err) => console.error(`[browser:error] ${err.message}`));
+
+            await page.goto(indexUrl, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+            await page.waitForSelector('#telegramTestBtn', { timeout: 15_000 });
+
+            const cfg = await page.evaluate(() => ({
+              token: document.querySelector('#telegramToken')?.value || '',
+              chatId: document.querySelector('#telegramChatId')?.value || '',
+            }));
+
+            if (!cfg.token || cfg.token.includes('PUT_YOUR_') || !cfg.chatId) {
+              throw new Error('Telegram Bot Token أو Chat ID غير مضبوط داخل index.html');
+            }
+
+            console.log('Telegram config detected. Sending test from the same V7 HTML...');
+            await page.click('#telegramTestBtn');
+
+            await page.waitForFunction(() => {
+              const el = document.querySelector('#telegramStatus');
+              if (!el) return false;
+              const text = String(el.textContent || '');
+              return text.includes('بنجاح') || text.includes('فشل') || text.includes('تعذر');
+            }, { timeout: 30_000 });
+
+            const result = await page.evaluate(() => ({
+              text: document.querySelector('#telegramStatus')?.textContent || '',
+              isError: document.querySelector('#telegramStatus')?.classList.contains('err') || false,
+            }));
+
+            console.log(`Telegram result: ${result.text}`);
+            if (result.isError || !result.text.includes('بنجاح')) {
+              throw new Error(`Telegram test failed: ${result.text}`);
+            }
+
+            console.log('✅ Telegram test message sent successfully from index.html');
+          } finally {
+            await browser.close();
+          }
+          EOF
+
+          node /tmp/telegram-test.mjs
