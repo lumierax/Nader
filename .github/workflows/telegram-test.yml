@@ -1,19 +1,27 @@
-name: Telegram Test From V7 HTML
+name: Coin Finder V7 — Every 5 Minutes
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: coin-finder-v7-live
+  cancel-in-progress: false
 
 jobs:
-  telegram-test:
+  scan:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js 24
         uses: actions/setup-node@v7
@@ -25,95 +33,315 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
 
-      - name: Open index.html and send Telegram test
+      - name: Start local server
+        run: |
+          python3 -m http.server 8080 >/tmp/coin-finder-server.log 2>&1 &
+          sleep 2
+
+      - name: Run same V7 HTML
         shell: bash
         run: |
-          cat > telegram-test.mjs <<'EOF'
-          import { chromium } from 'playwright';
-          import { pathToFileURL } from 'node:url';
-          import path from 'node:path';
+          cat > coin-finder-runner.cjs <<'EOF'
+          const fs = require('fs');
+          const { chromium } = require('playwright');
 
-          const indexPath = path.resolve(process.cwd(), 'index.html');
-          const indexUrl = pathToFileURL(indexPath).href;
+          const RUNTIME_FILE = 'runtime-browser-state.json';
 
-          const browser = await chromium.launch({
-            headless: true,
-            args: ['--disable-web-security', '--allow-file-access-from-files'],
-          });
+          let saved = {};
 
-          try {
-            const context = await browser.newContext();
-            const page = await context.newPage();
-
-            page.on('console', (msg) =>
-              console.log(`[browser:${msg.type()}] ${msg.text()}`)
-            );
-
-            page.on('pageerror', (err) =>
-              console.error(`[browser:error] ${err.message}`)
-            );
-
-            await page.goto(indexUrl, {
-              waitUntil: 'domcontentloaded',
-              timeout: 30_000
-            });
-
-            await page.waitForSelector('#telegramTestBtn', {
-              timeout: 15_000
-            });
-
-            const cfg = await page.evaluate(() => ({
-              token: document.querySelector('#telegramToken')?.value || '',
-              chatId: document.querySelector('#telegramChatId')?.value || '',
-            }));
-
-            if (!cfg.token || cfg.token.includes('PUT_YOUR_') || !cfg.chatId) {
-              throw new Error(
-                'Telegram Bot Token أو Chat ID غير مضبوط داخل index.html'
+          if (fs.existsSync(RUNTIME_FILE)) {
+            try {
+              const parsed = JSON.parse(
+                fs.readFileSync(RUNTIME_FILE, 'utf8')
               );
+
+              saved = parsed.localStorage || {};
+            } catch (err) {
+              console.log('Runtime state could not be loaded:', err.message);
             }
-
-            console.log(
-              'Telegram config detected. Sending test from the same V7 HTML...'
-            );
-
-            await page.click('#telegramTestBtn');
-
-            await page.waitForFunction(() => {
-              const el = document.querySelector('#telegramStatus');
-              if (!el) return false;
-
-              const text = String(el.textContent || '');
-
-              return (
-                text.includes('بنجاح') ||
-                text.includes('فشل') ||
-                text.includes('تعذر')
-              );
-            }, null, {
-              timeout: 30_000
-            });
-
-            const result = await page.evaluate(() => ({
-              text: document.querySelector('#telegramStatus')?.textContent || '',
-              isError:
-                document.querySelector('#telegramStatus')?.classList.contains('err') ||
-                false,
-            }));
-
-            console.log(`Telegram result: ${result.text}`);
-
-            if (result.isError || !result.text.includes('بنجاح')) {
-              throw new Error(`Telegram test failed: ${result.text}`);
-            }
-
-            console.log(
-              '✅ Telegram test message sent successfully from index.html'
-            );
-
-          } finally {
-            await browser.close();
           }
+
+          async function main() {
+            const browser = await chromium.launch({
+              headless: true,
+              args: [
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process'
+              ]
+            });
+
+            let scanComplete = false;
+            let failure = null;
+
+            try {
+              const context = await browser.newContext();
+
+              // Restore V7 + Telegram state from previous Action run.
+              await context.addInitScript((stored) => {
+                try {
+                  for (const [key, value] of Object.entries(stored || {})) {
+                    localStorage.setItem(key, value);
+                  }
+                } catch {}
+              }, saved);
+
+              const page = await context.newPage();
+
+              page.on('console', msg => {
+                const text = msg.text();
+
+                // Never print Telegram token.
+                if (!text.includes('bot')) {
+                  console.log(`[browser:${msg.type()}] ${text}`);
+                }
+              });
+
+              page.on('pageerror', err => {
+                console.error('[browser error]', err.message);
+              });
+
+              await page.goto(
+                'http://127.0.0.1:8080/index.html',
+                {
+                  waitUntil: 'domcontentloaded',
+                  timeout: 30000
+                }
+              );
+
+              await page.waitForSelector('#scanBtn', {
+                timeout: 15000
+              });
+
+              console.log('V7 HTML loaded.');
+
+              const telegram = await page.evaluate(() => ({
+                enabled:
+                  document.querySelector('#telegramEnabled')?.checked || false,
+
+                token:
+                  document.querySelector('#telegramToken')?.value || '',
+
+                chatId:
+                  document.querySelector('#telegramChatId')?.value || ''
+              }));
+
+              if (
+                !telegram.enabled ||
+                !telegram.token ||
+                telegram.token.includes('PUT_YOUR_') ||
+                !telegram.chatId
+              ) {
+                throw new Error(
+                  'Telegram configuration inside index.html is incomplete'
+                );
+              }
+
+              console.log('Telegram configuration detected.');
+
+              /*
+               * START OFFICIAL V7 SCAN
+               *
+               * We click the exact same button used manually.
+               * No duplicate scanner logic exists here.
+               */
+              console.log('Starting official V7 scan...');
+
+              await page.click('#scanBtn');
+
+              await page.waitForFunction(
+                () => document.querySelector('#scanBtn')?.disabled === true,
+                null,
+                { timeout: 10000 }
+              ).catch(() => {});
+
+              await page.waitForFunction(
+                () => document.querySelector('#scanBtn')?.disabled === false,
+                null,
+                { timeout: 240000 }
+              );
+
+              const scanInfo = await page.evaluate(() => ({
+                phase:
+                  document.querySelector('#scanPhase')?.textContent || '',
+
+                status:
+                  document.querySelector('#statusText')?.textContent || '',
+
+                universe:
+                  document.querySelector('#universeCount')?.textContent || '0',
+
+                visited:
+                  document.querySelector('#visitedCount')?.textContent || '0',
+
+                quick:
+                  document.querySelector('#quickCount')?.textContent || '0',
+
+                deep:
+                  document.querySelector('#deepCount')?.textContent || '0',
+
+                published:
+                  document.querySelector('#publishedCount')?.textContent || '0',
+
+                active:
+                  document.querySelector('#activeCount')?.textContent || '0'
+              }));
+
+              console.log('Scan result:', scanInfo);
+
+              scanComplete =
+                scanInfo.phase.includes('مكتمل') &&
+                !scanInfo.phase.includes('غير مكتمل');
+
+              /*
+               * TRACK EXISTING SIGNALS
+               *
+               * This checks whether any active signal has reached +10%.
+               * index.html itself sends the Telegram target alert.
+               */
+              const active = Number(scanInfo.active || 0);
+
+              if (active > 0) {
+                console.log(`Tracking ${active} active signal(s)...`);
+
+                await page.click('#refreshBtn');
+
+                await page.waitForFunction(
+                  () =>
+                    document.querySelector('#refreshBtn')?.disabled === false,
+                  null,
+                  { timeout: 240000 }
+                );
+
+                console.log(
+                  'Tracking result:',
+                  await page.locator('#statusText').innerText()
+                );
+              }
+
+              /*
+               * Give Telegram outbox a moment to complete.
+               */
+              await page.waitForTimeout(3000);
+
+              /*
+               * SAVE ONLY THE IMPORTANT BROWSER MEMORY
+               *
+               * V7 history:
+               *   coin-finder-challenge-v7
+               *
+               * Telegram sent/outbox history:
+               *   coin-finder-challenge-v7-telegram
+               *
+               * Token is deliberately removed from runtime state because
+               * index.html already contains the static private configuration.
+               */
+              const runtime = await page.evaluate(() => {
+                const result = {};
+
+                const scannerKey = 'coin-finder-challenge-v7';
+                const telegramKey = 'coin-finder-challenge-v7-telegram';
+
+                const scannerRaw = localStorage.getItem(scannerKey);
+
+                if (scannerRaw) {
+                  try {
+                    const scanner = JSON.parse(scannerRaw);
+
+                    /*
+                     * lastScan changes every run and is not needed for
+                     * duplicate protection. Keep signals/tracking history.
+                     */
+                    scanner.lastScan = 0;
+                    scanner.lastScanSummary = null;
+
+                    result[scannerKey] = JSON.stringify(scanner);
+                  } catch {}
+                }
+
+                const telegramRaw = localStorage.getItem(telegramKey);
+
+                if (telegramRaw) {
+                  try {
+                    const telegram = JSON.parse(telegramRaw);
+
+                    // Do not duplicate secrets inside runtime state.
+                    telegram.botToken = '';
+                    telegram.chatId = '';
+
+                    result[telegramKey] = JSON.stringify(telegram);
+                  } catch {}
+                }
+
+                return result;
+              });
+
+              fs.writeFileSync(
+                RUNTIME_FILE,
+                JSON.stringify(
+                  {
+                    updatedAt: new Date().toISOString(),
+                    localStorage: runtime
+                  },
+                  null,
+                  2
+                )
+              );
+
+              console.log('Runtime state saved.');
+
+              if (!scanComplete) {
+                failure = new Error(
+                  `V7 scan did not finish cleanly: ${scanInfo.phase} / ${scanInfo.status}`
+                );
+              }
+
+            } catch (err) {
+              failure = err;
+
+              console.error(
+                'Runner error:',
+                err && err.stack ? err.stack : err
+              );
+
+            } finally {
+              await browser.close();
+            }
+
+            if (failure) {
+              throw failure;
+            }
+
+            console.log('✅ V7 scan completed successfully.');
+          }
+
+          main().catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
           EOF
 
-          node telegram-test.mjs
+          node coin-finder-runner.cjs
+
+      - name: Persist V7 runtime memory
+        if: always()
+        shell: bash
+        run: |
+          if [ ! -f runtime-browser-state.json ]; then
+            echo "No runtime state generated."
+            exit 0
+          fi
+
+          git add runtime-browser-state.json
+
+          if git diff --cached --quiet; then
+            echo "No runtime-state change."
+            exit 0
+          fi
+
+          git config user.name "coin-finder-v7-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git commit -m "chore: update V7 runtime state"
+
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin HEAD:"$GITHUB_REF_NAME"
